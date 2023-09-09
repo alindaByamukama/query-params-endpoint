@@ -58,8 +58,7 @@ app.get("/api", (req, res) => {
 
 app.get("/", (req, res) => {
   const response = {
-    message:
-      "Go to localhost:3000/api?slack_name=alinda_byamukama&track=backend or http://example.com/api?slack_name=example_name&track=backend",
+    message: "Query with 'api?slack_name=example_name&track=backend'.",
   };
 
   res.json(response);
