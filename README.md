@@ -17,7 +17,7 @@ The information required includes:
 
 ## How to run or test this endpoint
 
-1. Go to the http://example.com/api and query with '?slack_name=example_name&track=backend'.
+1. Go to the http://example.com and query with '/api?slack_name=example_name&track=backend'.
    ~ OR ~
 2. Run the server locally on your desktop or laptop:
    - clone the project from the main branch,
@@ -25,4 +25,4 @@ The information required includes:
    - run npm install to update the packages,
    - open the terminal and enter npm start,
    - then navigate to localhost:/3000,
-   - add the query parameters 'api?slack_name=example_name&track=backend' to the url
+   - add the query parameters '/api?slack_name=example_name&track=backend' to the url

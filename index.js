@@ -58,7 +58,7 @@ app.get("/api", (req, res) => {
 
 app.get("/", (req, res) => {
   const response = {
-    message: "Query with 'api?slack_name=example_name&track=backend'.",
+    message: "Query with /api?slack_name=example_name&track=backend.",
   };
 
   res.json(response);
