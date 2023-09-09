@@ -45,8 +45,8 @@ app.get("/api", (req, res) => {
 
   const response = {
     slack_name,
-    current_day_of_week: currentDayOfWeek,
-    current_utc_time: currentUtcTime,
+    current_day: currentDayOfWeek,
+    utc_time: currentUtcTime,
     track,
     github_repo_url: githubRepoUrl,
     github_file_url: githubFileUrl,
@@ -58,7 +58,7 @@ app.get("/api", (req, res) => {
 
 app.get("/", (req, res) => {
   const response = {
-    message: "Query with 'api?slack_name=example_name&track=backend'.",
+    message: "Query with /api?slack_name=example_name&track=backend.",
   };
 
   res.json(response);
