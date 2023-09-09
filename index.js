@@ -10,6 +10,7 @@ app.use(express.json());
 
 app.get("/api", (req, res) => {
   const { slack_name, track } = req.query;
+
   const currentDate = new Date();
 
   const getDayOfWeek = (date) => {
@@ -25,12 +26,17 @@ app.get("/api", (req, res) => {
     return daysOfWeek[date.getUTCDay()];
   };
 
-  const getCurrentUtcTime = (date) => {
-    return date.toISOString();
-  };
+  const timeWindowMinutes = 2;
+
+  const currentUtcTime = new Date(
+    currentDate.getTime() - timeWindowMinutes * 60000
+  );
+
+  const currentUtcTimeString = currentUtcTime
+    .toISOString()
+    .replace(/\.\d{3}Z$/, "Z");
 
   const currentDayOfWeek = getDayOfWeek(currentDate);
-  const currentUtcTime = getCurrentUtcTime(currentDate);
 
   const githubRepoUrl =
     "https://github.com/alindaByamukama/query-params-endpoint";
@@ -40,7 +46,7 @@ app.get("/api", (req, res) => {
   const response = {
     slack_name,
     current_day: currentDayOfWeek,
-    utc_time: currentUtcTime,
+    utc_time: currentUtcTimeString,
     track,
     github_repo_url: githubRepoUrl,
     github_file_url: githubFileUrl,
