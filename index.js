@@ -25,18 +25,12 @@ app.get("/api", (req, res) => {
     return daysOfWeek[date.getUTCDay()];
   };
 
-  const getCurrentUTCTimeWithTolerance = (date) => {
-    const toleranceMinutes = 2 * 60000;
-    const currentUtcTime = date.toISOString();
-    const currentUtcTimeWithTolerance = new Date(
-      new Date(currentUtcTime).getTime() + toleranceMinutes
-    ).toISOString();
-
-    return currentUtcTimeWithTolerance;
+  const getCurrentUtcTime = (date) => {
+    return date.toISOString();
   };
 
   const currentDayOfWeek = getDayOfWeek(currentDate);
-  const currentUtcTime = getCurrentUTCTimeWithTolerance(currentDate);
+  const currentUtcTime = getCurrentUtcTime(currentDate);
 
   const githubRepoUrl =
     "https://github.com/alindaByamukama/query-params-endpoint";
