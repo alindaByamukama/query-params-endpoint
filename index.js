@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import moment from "moment";
 
 // CONFIGURATIONS
 dotenv.config();
@@ -8,46 +9,47 @@ app.use(express.json());
 
 // GET ROUTE & HELPER FUNCTIONS
 
-const getDayOfWeek = (date) => {
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  return daysOfWeek[date.getUTCDay()];
+const getCurrentDay = () => {
+  return moment().utc().format("dddd");
 };
 
-const getUtcTime = (date) => {
-  const currentUTCTime = new Date().getTime();
+const getCurrentUTCTime = () => {
+  const currentUTC = moment().utc();
+  const allowedDeviation = 2;
+  const currentTime = moment.utc();
 
-  const timeOffsetMilliseconds = date.getTimezoneOffset() * 60000;
-
-  const currentTimeWithinWindow = new Date(currentUTCTime - timeOffsetMilliseconds);
-
-  return currentTimeWithinWindow;
+  if (Math.abs(currentTime.diff(currentUTC, "minutes")) <= allowedDeviation) {
+    return currentUTC.format("YYYY-MM-DDTHH:mm:ss[Z]");
+  } else {
+    return null;
+  }
 };
 
 app.get("/api", (req, res) => {
-  const { slack_name, track } = req.query;
+  try {
+    const { slack_name, track } = req.query;
 
-  const currentDate = new Date();
+    const currentDay = getCurrentDay();
+    const utcTime = getCurrentUTCTime();
 
-  const response = {
-    slack_name,
-    current_day: getDayOfWeek(currentDate),
-    utc_time: getUtcTime(currentDate).toISOString(),
-    track,
-    github_repo_url: "https://github.com/alindaByamukama/query-params-endpoint",
-    github_file_url:
-      "https://github.com/alindaByamukama/query-params-endpoint/blob/main/index.js",
-    status_code: 200,
-  };
+    const responseData = {
+      slack_name,
+      current_day: currentDay,
+      utc_time: utcTime,
+      track,
+      github_repo_url:
+        "https://github.com/alindaByamukama/query-params-endpoint",
+      github_file_url:
+        "https://github.com/alindaByamukama/query-params-endpoint/blob/main/index.js",
+      status_code: 200,
+    };
 
-  res.json(response);
+    res.status(200).json(responseData);
+  } catch (error) {
+    res
+      .status(400)
+      .json({ error: "Invalid parameters or time deviation > 2 minutes" });
+  }
 });
 
 app.get("/", (req, res) => {
@@ -55,7 +57,7 @@ app.get("/", (req, res) => {
     message: "Query with /api?slack_name=example_name&track=backend.",
   };
 
-  res.json(response);
+  res.status(200).json(response);
 });
 
 // EXPRESS SERVER
