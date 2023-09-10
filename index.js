@@ -6,50 +6,44 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// GET ROUTE with HELPER FUNCTIONS
+// GET ROUTE & HELPER FUNCTIONS
+
+const getDayOfWeek = (date) => {
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  return daysOfWeek[date.getUTCDay()];
+};
+
+const getUtcTime = (date) => {
+  const currentUTCTime = new Date().getTime();
+
+  const timeOffsetMilliseconds = date.getTimezoneOffset() * 60000;
+
+  const currentTimeWithinWindow = new Date(currentUTCTime - timeOffsetMilliseconds);
+
+  return currentTimeWithinWindow;
+};
 
 app.get("/api", (req, res) => {
   const { slack_name, track } = req.query;
 
   const currentDate = new Date();
 
-  const getDayOfWeek = (date) => {
-    const daysOfWeek = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    return daysOfWeek[date.getUTCDay()];
-  };
-
-  const timeWindowMinutes = 2;
-
-  const currentUtcTime = new Date(
-    currentDate.getTime() - timeWindowMinutes * 60000
-  );
-
-  const currentUtcTimeString = currentUtcTime
-    .toISOString()
-    .replace(/\.\d{3}Z$/, "Z");
-
-  const currentDayOfWeek = getDayOfWeek(currentDate);
-
-  const githubRepoUrl =
-    "https://github.com/alindaByamukama/query-params-endpoint";
-  const githubFileUrl =
-    "https://github.com/alindaByamukama/query-params-endpoint/blob/main/index.js";
-
   const response = {
     slack_name,
-    current_day: currentDayOfWeek,
-    utc_time: currentUtcTimeString,
+    current_day: getDayOfWeek(currentDate),
+    utc_time: getUtcTime(currentDate).toISOString(),
     track,
-    github_repo_url: githubRepoUrl,
-    github_file_url: githubFileUrl,
+    github_repo_url: "https://github.com/alindaByamukama/query-params-endpoint",
+    github_file_url:
+      "https://github.com/alindaByamukama/query-params-endpoint/blob/main/index.js",
     status_code: 200,
   };
 
